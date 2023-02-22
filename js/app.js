@@ -15,12 +15,15 @@ let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 let resultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('result-container');
+// let resultsList = document.getElementById('result-container');
+let ctx = document.getElementById('my-chart');
+
+
 
 
 
 //CONSTRUCTOR FUNCTION
-function Product (name,fileExtension = 'jpg') {
+function Product(name, fileExtension = 'jpg') {
   this.name = name;
   this.image = `img/${name}.${fileExtension}`;
   this.votes = 0;
@@ -32,23 +35,31 @@ function Product (name,fileExtension = 'jpg') {
 
 // HELPER FUNCTIONS/UTILITIES
 function renderImg() {
-  let imgOneIndex = randomIndex();
-  let imgTwoIndex = randomIndex();
-  let imgThreeIndex = randomIndex();
 
-  // TODO: Make sure the images are unique
-  // Compare Img 1 & Img 2 & Img 3 while they are the same get a new randomIndex
-  // could this  be stored in another way
-  // let randomImage = [imgOneIndex,imgTwoIndex,imgThreeIndex];
-  while(imgOneIndex === imgTwoIndex ||imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
 
-    imgOneIndex = randomIndex();
-    imgTwoIndex = randomIndex();
-    imgThreeIndex = randomIndex();
+  let indexArray = [];
+
+  while (indexArray.length < 6) {
+    let randomNumber = randomIndex();
+    if(!indexArray.includes(randomNumber)) {
+      indexArray.push(randomNumber);
+    }
   }
-  // for(let i = 0; i < randomImage.length; i++) {
-  //   randomImage[i];
-  // }
+  console.log(indexArray);
+
+  // let imgOneIndex = randomIndex();
+  // let imgTwoIndex = randomIndex();
+  // let imgThreeIndex = randomIndex();
+
+
+  // while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
+
+
+  let imgOneIndex = indexArray.shift();
+  let imgTwoIndex = indexArray.shift();
+  let imgThreeIndex = indexArray.shift();
+
+
   imgOne.src = productsArray[imgOneIndex].image;
   imgOne.title = productsArray[imgOneIndex].name;
   imgOne.alt = `this is an image of the product ${productsArray[imgOneIndex]}.name`;
@@ -72,6 +83,51 @@ function randomIndex() {
 }
 
 
+// Render Chart Function
+
+function renderChart() {
+  let productNames = [];
+  let productVotes = [];
+  let productViews = [];
+
+  for (let i = 0; i < productsArray.length; i++) {
+    productNames.push(productsArray[i].name);
+    productVotes.push(productsArray[i].votes);
+    productViews.push(productsArray[i].views);
+  }
+
+  let chartObj = {
+    type: 'bar',
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: '# of Votes',
+        data: productVotes,
+        borderWidth: 3,
+        backgroundColor:['orange'],
+        borderColor:['black']
+      },
+      {
+        label: '# of Views',
+        data: productViews,
+        borderWidth: 3,
+        backgroundColor:['orange'],
+        borderColor:['black']
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: false
+        }
+      }
+    }
+  };
+  // two arguments being passed in to create new Chart constructor
+  new Chart(ctx, chartObj);//eslint-disable-line
+}
+
+
 function handleImgClick(event) {
   // Identify the image that was clicked
   let imgClicked = event.target.title;
@@ -79,8 +135,8 @@ function handleImgClick(event) {
 
   //TODO: Increase the number of clicks on the image
 
-  for(let i = 0; i < productsArray.length; i++) {
-    if(imgClicked === productsArray[i].name) {
+  for (let i = 0; i < productsArray.length; i++) {
+    if (imgClicked === productsArray[i].name) {
       productsArray[i].votes++;
     }
   }
@@ -92,20 +148,22 @@ function handleImgClick(event) {
 
   // TODO: once votings are done - stop the click
 
-  if(votingRounds === 0){
-    imgContainer.removeEventListener('click',handleImgClick);
+  if (votingRounds === 0) {
+    imgContainer.removeEventListener('click', handleImgClick);
   }
 }
 
-function handleShowResults(){
-  if(votingRounds === 0) {
-    for(let i = 0; i < productsArray.length; i++){
-      let productList = document.createElement('li');
-      productList.textContent = `${productsArray[i].name}: Views: ${productsArray[i].views} & Votes: ${productsArray[i].votes}`;
-      console.log(productList);
-      resultsList.appendChild(productList);
-    }
-    resultsBtn.removeEventListener('click',handleShowResults);
+function handleShowResults() {
+  if (votingRounds === 0) {
+    // for (let i = 0; i < productsArray.length; i++) {
+    //   let productList = document.createElement('li');
+    //   productList.textContent = `${productsArray[i].name}: Views: ${productsArray[i].views} & Votes: ${productsArray[i].votes}`;
+    //   console.log(productList);
+    //   resultsList.appendChild(productList);
+    // }
+    renderChart();
+    resultsBtn.removeEventListener('click', handleShowResults);
+
   }
 }
 // EXECUTABLE CODE
@@ -124,18 +182,28 @@ let pen = new Product('pen');
 let petSweep = new Product('pet-sweep');
 let scissors = new Product('scissors');
 let shark = new Product('shark');
-let sweep = new Product('sweep','png');
+let sweep = new Product('sweep', 'png');
 let tauntaun = new Product('tauntaun');
 let unicorn = new Product('unicorn');
 let waterCan = new Product('water-can');
 let wineGlass = new Product('wine-glass');
 
 
-productsArray.push(bag,banana,bathroom, boots, breakfast, bubblegum,chair,cthulu,dogDuck,dragon,pen,petSweep,scissors,shark,sweep,tauntaun,unicorn,waterCan,wineGlass);
+productsArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
 
 renderImg();
 
-imgContainer.addEventListener('click',handleImgClick);
-resultsBtn.addEventListener('click',handleShowResults);
+imgContainer.addEventListener('click', handleImgClick);
+resultsBtn.addEventListener('click', handleShowResults);
 
-console.log(resultsBtn);
+// let imgOneIndex = randomIndex();
+// let imgTwoIndex = randomIndex();
+// let imgThreeIndex = randomIndex();
+
+
+// while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
+
+//   imgOneIndex = randomIndex();
+//   imgTwoIndex = randomIndex();
+//   imgThreeIndex = randomIndex();
+// }

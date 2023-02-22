@@ -42,7 +42,7 @@ function renderImg() {
   while (indexArray.length < 6) {
     let randomNumber = randomIndex();
     if(!indexArray.includes(randomNumber)) {
-      indexArray.push(randomNumber);
+      indexArray.unshift(randomNumber);
     }
   }
   console.log(indexArray);
@@ -55,9 +55,9 @@ function renderImg() {
   // while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
 
 
-  let imgOneIndex = indexArray.shift();
-  let imgTwoIndex = indexArray.shift();
-  let imgThreeIndex = indexArray.shift();
+  let imgOneIndex = indexArray.pop();
+  let imgTwoIndex = indexArray.pop();
+  let imgThreeIndex = indexArray.pop();
 
 
   imgOne.src = productsArray[imgOneIndex].image;

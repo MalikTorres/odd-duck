@@ -41,11 +41,11 @@ function renderImg() {
 
   while (indexArray.length < 6) {
     let randomNumber = randomIndex();
-    if(!indexArray.includes(randomNumber)) {
+    if (!indexArray.includes(randomNumber)) {
       indexArray.push(randomNumber);
     }
   }
-  console.log(indexArray);
+  // console.log(indexArray);
 
   // let imgOneIndex = randomIndex();
   // let imgTwoIndex = randomIndex();
@@ -104,15 +104,15 @@ function renderChart() {
         label: '# of Votes',
         data: productVotes,
         borderWidth: 3,
-        backgroundColor:['orange'],
-        borderColor:['black']
+        backgroundColor: ['orange'],
+        borderColor: ['black']
       },
       {
         label: '# of Views',
         data: productViews,
         borderWidth: 3,
-        backgroundColor:['orange'],
-        borderColor:['black']
+        backgroundColor: ['orange'],
+        borderColor: ['black']
       }]
     },
     options: {
@@ -150,17 +150,20 @@ function handleImgClick(event) {
 
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleImgClick);
+    // Local STORAGE STARTS HERE
+    // Step 1 - Convert our data to a string
+    // STEP 2 - SET STRIGIFIED METHOD INTO LOCAL STORAGE
+    // localStorage.setItem('myProducts',strigifiedGoats)
+    // Storing locally after votes and views have been calculated
+    let stringifiedProducts = JSON.stringify(productsArray);
+    console.log('Strigified Products >>>> ', stringifiedProducts);
+    localStorage.setItem('myProducts', stringifiedProducts);
+    // console.log(localStorage);
   }
 }
 
 function handleShowResults() {
   if (votingRounds === 0) {
-    // for (let i = 0; i < productsArray.length; i++) {
-    //   let productList = document.createElement('li');
-    //   productList.textContent = `${productsArray[i].name}: Views: ${productsArray[i].views} & Votes: ${productsArray[i].votes}`;
-    //   console.log(productList);
-    //   resultsList.appendChild(productList);
-    // }
     renderChart();
     resultsBtn.removeEventListener('click', handleShowResults);
 
@@ -168,33 +171,125 @@ function handleShowResults() {
 }
 // EXECUTABLE CODE
 
-let bag = new Product('bag');
-let banana = new Product('banana');
-let bathroom = new Product('bathroom');
-let boots = new Product('boots');
-let breakfast = new Product('breakfast');
-let bubblegum = new Product('bubblegum');
-let chair = new Product('chair');
-let cthulu = new Product('cthulhu');
-let dogDuck = new Product('dog-duck');
-let dragon = new Product('dragon');
-let pen = new Product('pen');
-let petSweep = new Product('pet-sweep');
-let scissors = new Product('scissors');
-let shark = new Product('shark');
-let sweep = new Product('sweep', 'png');
-let tauntaun = new Product('tauntaun');
-let unicorn = new Product('unicorn');
-let waterCan = new Product('water-can');
-let wineGlass = new Product('wine-glass');
+
+// LOCAL STORAGE CONTINUES....
 
 
-productsArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
+// STEP 3 - GET INFO FROM LOCAL STORAGE
+let retrievedProducts = localStorage.getItem('myProducts');
+// let retrivedProducts = localStorage.getItem('myProducts');
 
+// console.log('Retrived products >>>>>>', retrievedProducts);
+
+// STEP 4 - CONVERT BACK TO USABLE CODE AND STORE IT
+let parsedProducts = JSON.parse(retrievedProducts);
+
+console.log('my parsed products >>>>> parsedProducts', parsedProducts);
+
+
+// REUBUILD GOATS USING THE CONSTRUCTOR
+
+
+//if(retrievedProducts) {
+// for(let i = 0; i < parsedProducts.length;i++) {
+
+//if parsedProducts[i].name === 'sweep'); {
+//let recontrustedProducts = new Product(parsedProdcts[i].name,'png');
+// reconstructdProducts.views = parsedProducts[i].views;
+// reconstructdProducts.views = parsedProducts[i].votes;
+//productsArray.push(recontrustedProducts );
+// } else {
+// let reconstructedProducts = new Product(parsedProducts[i].name);
+// reconstructdProducts.views = parsedProducts[i].views;
+// reconstructdProducts.views = parsedProducts[i].votes;
+// }
+// }
+// } else {
+
+// RECONSTRUCTING OBJECT THAT IS COMING IN FROM LOCAL STORAGE
+if (retrievedProducts) {
+  for (let i = 0; i < parsedProducts.length; i++) {
+    if (parsedProducts[i].name === 'sweep') {
+      let reconstructedProducts = new Product(parsedProducts[i].name, 'png');
+      // reassigning the views value to data that is coming in from local storage(data persistence)
+      reconstructedProducts.views = parsedProducts[i].views;//originally zero
+      // reassigning to the votes value to that data that is coming from lcoal storage(data persistence)
+      reconstructedProducts.votes = parsedProducts[i].votes;// originall zero
+
+    } else {
+      let reconstructedProducts = new Product(parsedProducts[i].name);
+      reconstructedProducts.views = parsedProducts[i].views;
+      reconstructedProducts.votes = parsedProducts[i].votes;
+      productsArray.push(reconstructedProducts);
+
+    }
+  }
+} else {
+
+  let bag = new Product('bag');
+  let banana = new Product('banana');
+  let bathroom = new Product('bathroom');
+  let boots = new Product('boots');
+  let breakfast = new Product('breakfast');
+  let bubblegum = new Product('bubblegum');
+  let chair = new Product('chair');
+  let cthulu = new Product('cthulhu');
+  let dogDuck = new Product('dog-duck');
+  let dragon = new Product('dragon');
+  let pen = new Product('pen');
+  let petSweep = new Product('pet-sweep');
+  let scissors = new Product('scissors');
+  let shark = new Product('shark');
+  let sweep = new Product('sweep', 'png');
+  let tauntaun = new Product('tauntaun');
+  let unicorn = new Product('unicorn');
+  let waterCan = new Product('water-can');
+  let wineGlass = new Product('wine-glass');
+
+
+
+  productsArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
+
+}
+
+console.log('normal Products Array >>>>>', productsArray);
 renderImg();
 
 imgContainer.addEventListener('click', handleImgClick);
 resultsBtn.addEventListener('click', handleShowResults);
+
+
+// HAPPY PATH
+/*
+if (retrievedProducts) {
+  productsArray = parsedProducts;
+} else {
+
+  let bag = new Product('bag');
+  let banana = new Product('banana');
+  let bathroom = new Product('bathroom');
+  let boots = new Product('boots');
+  let breakfast = new Product('breakfast');
+  let bubblegum = new Product('bubblegum');
+  let chair = new Product('chair');
+  let cthulu = new Product('cthulhu');
+  let dogDuck = new Product('dog-duck');
+  let dragon = new Product('dragon');
+  let pen = new Product('pen');
+  let petSweep = new Product('pet-sweep');
+  let scissors = new Product('scissors');
+  let shark = new Product('shark');
+  let sweep = new Product('sweep', 'png');
+  let tauntaun = new Product('tauntaun');
+  let unicorn = new Product('unicorn');
+  let waterCan = new Product('water-can');
+  let wineGlass = new Product('wine-glass');
+
+}
+
+*/
+
+
 
 // let imgOneIndex = randomIndex();
 // let imgTwoIndex = randomIndex();

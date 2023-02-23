@@ -14,4 +14,4 @@ This is an application that generates three random images that a user can select
 
 ### Lighthouse Accessibility Report Score
 
-![lighthouse](newLighthouse.png)
+![lighthouse](updated.png)
